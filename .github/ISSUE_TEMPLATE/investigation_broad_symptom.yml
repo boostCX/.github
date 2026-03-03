@@ -1,0 +1,82 @@
+name: "Investigation (Broad Symptom)"
+description: "Use for broad symptoms (e.g., 'site is slow') to capture baseline and produce scoped child bugs."
+title: "[Investigation] <symptom> - <client/area>"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Use this when:** the symptom is broad or unclear.
+        **Exit criteria:** this investigation produces scoped child bugs (or a clear WAD/CNR outcome) with measurable baselines.
+
+  - type: input
+    id: scope
+    attributes:
+      label: Scope (client/tenant/module)
+      placeholder: "e.g., IBC / Branch Reporting / Dashboard + Filters"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Prod
+        - UAT
+        - QA
+        - Dev
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: symptoms
+    attributes:
+      label: What symptoms are being reported?
+      placeholder: |
+        - Dashboard load slow
+        - Filters lag
+        - Export timing out
+    validations:
+      required: true
+
+  - type: textarea
+    id: baseline
+    attributes:
+      label: Baseline measurements (required)
+      description: "List at least 2–3 representative actions with measured timings."
+      placeholder: |
+        1) Dashboard load: 8.4s (Prod)
+        2) Apply filter X: 5.1s
+        3) Export CSV: timeout at 60s
+    validations:
+      required: true
+
+  - type: textarea
+    id: suspected_areas
+    attributes:
+      label: Suspected areas (optional)
+      description: "No root cause required. Just 'where to look first' if known."
+      placeholder: "DB / API / UI / Infra / Unknown"
+    validations:
+      required: false
+
+  - type: textarea
+    id: outcome_required
+    attributes:
+      label: Required outcome (exit criteria)
+      description: "What must this investigation produce?"
+      placeholder: |
+        - Child bugs for each scoped symptom with measurable benchmarks
+        - Before/after comparisons for any fixes
+        - Clear comms back to client/internal stakeholders
+    validations:
+      required: true
+
+  - type: textarea
+    id: links
+    attributes:
+      label: Links (tickets, dashboards, logs)
+      placeholder: "Link related issues, client escalations, monitoring, etc."
+    validations:
+      required: false

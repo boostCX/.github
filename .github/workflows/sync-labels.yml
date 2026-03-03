@@ -1,0 +1,93 @@
+name: Sync labels
+
+# Runs automatically when labels.yml changes on main,
+# or manually via workflow_dispatch.
+on:
+  push:
+    branches: [main]
+    paths: [labels.yml]
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Target repo name (without org prefix), or "all" for every repo'
+        required: false
+        default: "all"
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    name: Sync labels to repos
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync labels
+        env:
+          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          ORG="boostCX"
+          LABELS_FILE="labels.yml"
+          TARGET="${{ github.event.inputs.repo || 'all' }}"
+
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::LABEL_SYNC_TOKEN secret is not set. Create a PAT with repo scope and add it as an org secret."
+            exit 1
+          fi
+
+          # ── Build target repo list ───────────────────────────────
+          if [ "$TARGET" = "all" ]; then
+            echo "Fetching all repos in $ORG..."
+            REPOS=$(gh repo list "$ORG" --limit 200 --json name --jq '.[].name' | grep -v "^\.github$")
+          else
+            REPOS="$TARGET"
+          fi
+
+          if [ -z "$REPOS" ]; then
+            echo "No target repos found."
+            exit 0
+          fi
+
+          # ── Parse labels from YAML ───────────────────────────────
+          LABEL_COUNT=$(yq eval '. | length' "$LABELS_FILE")
+          echo "Found $LABEL_COUNT labels in $LABELS_FILE"
+          echo ""
+
+          # ── Sync to each repo ────────────────────────────────────
+          SYNC_ERRORS=0
+
+          for REPO in $REPOS; do
+            FULL="$ORG/$REPO"
+            echo "━━━ Syncing to $FULL ━━━"
+
+            for i in $(seq 0 $(( LABEL_COUNT - 1 ))); do
+              NAME=$(yq eval ".[$i].name"        "$LABELS_FILE")
+              COLOR=$(yq eval ".[$i].color"       "$LABELS_FILE")
+              DESC=$(yq eval ".[$i].description"  "$LABELS_FILE")
+
+              # Try create first; if exists, update
+              if gh label create "$NAME" --repo "$FULL" --color "$COLOR" --description "$DESC" 2>/dev/null; then
+                echo "  ✓ Created: $NAME"
+              else
+                if gh label edit "$NAME" --repo "$FULL" --color "$COLOR" --description "$DESC" 2>/dev/null; then
+                  echo "  ↻ Updated: $NAME"
+                else
+                  echo "  ✗ Failed:  $NAME"
+                  SYNC_ERRORS=$((SYNC_ERRORS + 1))
+                fi
+              fi
+            done
+
+            echo ""
+          done
+
+          if [ "$SYNC_ERRORS" -gt 0 ]; then
+            echo "::warning::Completed with $SYNC_ERRORS label sync errors."
+          else
+            echo "All labels synced successfully."
+          fi

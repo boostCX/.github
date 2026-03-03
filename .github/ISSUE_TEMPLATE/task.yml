@@ -1,0 +1,70 @@
+name: "Task"
+description: "Internal engineering or operational work (standalone or sub-task of a story)."
+title: "[Task] <short summary>"
+labels:
+  - task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Use this for internal work:** tech debt, refactors, CI/CD, infrastructure, documentation, or implementation sub-tasks of a story.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "What needs to be done and why."
+      placeholder: "Clear description of the work."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: "How do we know this is done?"
+      placeholder: |
+        - [ ] Condition 1
+        - [ ] Condition 2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      options:
+        - Reporting Platform
+        - Tenant Catalog
+        - Powertrain
+        - AI Insights
+        - Communications
+        - Survey Engine
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: owner
+    attributes:
+      label: Owner / assignee
+      placeholder: "@github-username"
+    validations:
+      required: true
+
+  - type: input
+    id: parent
+    attributes:
+      label: Parent issue (if sub-task)
+      description: "Link the parent story or investigation if this is a child task."
+      placeholder: "#123 or URL"
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / context
+      placeholder: "Additional context, links, or constraints."
+    validations:
+      required: false

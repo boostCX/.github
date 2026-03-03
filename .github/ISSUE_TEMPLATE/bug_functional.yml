@@ -1,0 +1,88 @@
+name: "Bug (Functional)"
+description: "Report a functional bug with clear repro steps and expected vs actual behavior."
+title: "[Bug] <short summary>"
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Goal:** Make this reproducible and testable. No root-cause guesses required.
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Prod
+        - UAT
+        - QA
+        - Dev
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: environment_details
+    attributes:
+      label: Environment details (URL / tenant / build / branch)
+      placeholder: "e.g., https://app.example.com, tenant=customer-a, build=1.2.3"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: "Include navigation path, user role, inputs, and any filters/parameters."
+      placeholder: |
+        1) ...
+        2) ...
+        3) ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      placeholder: "What should happen?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      placeholder: "What happened instead?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: "Screenshots/video/logs/console output. Add links or paste snippets."
+      placeholder: "Attach screenshots or paste logs here."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity (technical impact)
+      options:
+        - Critical (crash/data loss/security)
+        - High (major feature broken/no workaround)
+        - Medium (workaround exists/partial failure)
+        - Low (minor/cosmetic)
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / context
+      description: "Anything else helpful: scope, frequency, affected users."
+    validations:
+      required: false

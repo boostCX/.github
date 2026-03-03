@@ -1,0 +1,130 @@
+name: "Bug (Performance)"
+description: "Report a performance issue with measurable timing, benchmark/threshold, and context."
+title: "[Perf] <page/action> exceeds benchmark"
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Governance note:** Performance issues require measurable data. If fields are missing, this will be returned for refinement.
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Prod
+        - UAT
+        - QA
+        - Dev
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: environment_details
+    attributes:
+      label: Environment details (URL / tenant / build / branch)
+      placeholder: "e.g., https://app.example.com, tenant=customer-a, build=1.2.3"
+    validations:
+      required: true
+
+  - type: input
+    id: page_action
+    attributes:
+      label: Page / action under test
+      placeholder: "e.g., Branch Dashboard load, Customer Search, Export CSV"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce (include filters/role)
+      placeholder: |
+        Role: ...
+        Filters: ...
+        Steps:
+        1) ...
+        2) ...
+    validations:
+      required: true
+
+  - type: input
+    id: measured_time
+    attributes:
+      label: Measured time (actual)
+      placeholder: "e.g., 8.4s, 1250ms"
+    validations:
+      required: true
+
+  - type: input
+    id: benchmark
+    attributes:
+      label: Expected benchmark / threshold
+      description: "If not defined yet, put 'TBD' and link the place we’ll define NFRs."
+      placeholder: "e.g., ≤ 3.0s on UAT for standard data volume"
+    validations:
+      required: true
+
+  - type: input
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      placeholder: "e.g., 10/10, 3/10, ~30%"
+    validations:
+      required: true
+
+  - type: textarea
+    id: data_volume
+    attributes:
+      label: Data volume / scenario context
+      description: "Time range, record counts (if known), heavy configs, typical vs atypical dataset."
+      placeholder: |
+        Time range: last 90 days
+        Approx records: ~1.2M
+        Notes: typical for client? yes/no/unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: baseline
+    attributes:
+      label: Baseline / comparison (before)
+      description: "Prior build, UAT vs Prod, or historical best-known timing. Add numbers."
+      placeholder: "e.g., UAT 3.1s vs Prod 8.4s; prior release was ~3.5s"
+    validations:
+      required: true
+
+  - type: textarea
+    id: network_device
+    attributes:
+      label: Device / browser / network conditions
+      placeholder: |
+        Browser: Chrome 122
+        Device: Desktop
+        Network: VPN on/off, throttling, latency notes
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence (required for perf)
+      description: "HAR file, DevTools timings, screenshots/video, query plans, logs."
+      placeholder: "Attach timing screenshots/video/HAR or paste links."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity (technical impact)
+      options:
+        - Critical (blocks workflow / timeouts)
+        - High (major delays / frequent)
+        - Medium (noticeable / intermittent)
+        - Low (minor)
+    validations:
+      required: true

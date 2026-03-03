@@ -1,0 +1,145 @@
+# ──────────────────────────────────────────────
+# sync-project-fields.yml
+# Mirrors area:* labels to the Product Area field
+# on the boostCX Platform Delivery project board.
+#
+# Requires:
+#   ORG_PROJECT_TOKEN — a PAT (classic) or fine-grained
+#     token with `project` (read:project + write:project)
+#     scope, stored as an org-level Actions secret.
+#   PROJECT_NUMBER — the GitHub Projects (v2) number
+#     for the boostCX Platform Delivery board (set below).
+# ──────────────────────────────────────────────
+name: Sync project fields from labels
+
+on:
+  issues:
+    types: [labeled]
+
+env:
+  ORG: boostCX
+  PROJECT_NUMBER: 1                       # ← update to actual project number
+  FIELD_NAME: Product Area                # project single-select field name
+
+jobs:
+  sync-product-area:
+    # Only run when an area:* label is applied
+    if: startsWith(github.event.label.name, 'area:')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: read
+    steps:
+      - name: Map label to field value
+        id: map
+        run: |
+          LABEL="${{ github.event.label.name }}"
+          # Strip the "area:" prefix and convert to title case for the field value
+          case "$LABEL" in
+            area:reporting)         VALUE="Reporting Platform" ;;
+            area:tenant-catalog)    VALUE="Tenant Catalog" ;;
+            area:powertrain)        VALUE="Powertrain" ;;
+            area:ai-insights)       VALUE="AI Insights" ;;
+            area:communications)    VALUE="Communications" ;;
+            area:survey-engine)     VALUE="Survey Engine" ;;
+            *)                      echo "::warning::Unknown area label $LABEL — skipping."; exit 0 ;;
+          esac
+          echo "value=$VALUE" >> "$GITHUB_OUTPUT"
+
+      - name: Get project and item IDs
+        id: ids
+        env:
+          GH_TOKEN: ${{ secrets.ORG_PROJECT_TOKEN }}
+        run: |
+          # Fetch the project node ID
+          PROJECT_ID=$(gh api graphql -f query='
+            query($org: String!, $num: Int!) {
+              organization(login: $org) {
+                projectV2(number: $num) { id }
+              }
+            }' -f org="$ORG" -F num="$PROJECT_NUMBER" \
+            --jq '.data.organization.projectV2.id')
+
+          echo "project_id=$PROJECT_ID" >> "$GITHUB_OUTPUT"
+
+          # Fetch the item ID for this issue on the project
+          ISSUE_NODE_ID="${{ github.event.issue.node_id }}"
+          ITEM_ID=$(gh api graphql -f query='
+            query($projectId: ID!, $cursor: String) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  items(first: 100, after: $cursor) {
+                    nodes {
+                      id
+                      content { ... on Issue { id } }
+                    }
+                    pageInfo { hasNextPage endCursor }
+                  }
+                }
+              }
+            }' -f projectId="$PROJECT_ID" \
+            --jq ".data.node.items.nodes[] | select(.content.id == \"$ISSUE_NODE_ID\") | .id")
+
+          if [ -z "$ITEM_ID" ]; then
+            echo "::warning::Issue not found on project board — it may not have been added yet."
+            exit 0
+          fi
+
+          echo "item_id=$ITEM_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Get field and option IDs
+        id: field
+        env:
+          GH_TOKEN: ${{ secrets.ORG_PROJECT_TOKEN }}
+        run: |
+          FIELD_DATA=$(gh api graphql -f query='
+            query($projectId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  fields(first: 50) {
+                    nodes {
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options { id name }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f projectId="${{ steps.ids.outputs.project_id }}")
+
+          FIELD_ID=$(echo "$FIELD_DATA" | jq -r \
+            ".data.node.fields.nodes[] | select(.name == \"${{ env.FIELD_NAME }}\") | .id")
+
+          OPTION_ID=$(echo "$FIELD_DATA" | jq -r \
+            ".data.node.fields.nodes[] | select(.name == \"${{ env.FIELD_NAME }}\") | .options[] | select(.name == \"${{ steps.map.outputs.value }}\") | .id")
+
+          if [ -z "$FIELD_ID" ] || [ -z "$OPTION_ID" ]; then
+            echo "::error::Could not find field '${{ env.FIELD_NAME }}' or option '${{ steps.map.outputs.value }}' on the project."
+            exit 1
+          fi
+
+          echo "field_id=$FIELD_ID"   >> "$GITHUB_OUTPUT"
+          echo "option_id=$OPTION_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Set Product Area field
+        env:
+          GH_TOKEN: ${{ secrets.ORG_PROJECT_TOKEN }}
+        run: |
+          gh api graphql -f query='
+            mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $projectId
+                itemId:    $itemId
+                fieldId:   $fieldId
+                value:     { singleSelectOptionId: $optionId }
+              }) {
+                projectV2Item { id }
+              }
+            }' \
+            -f projectId="${{ steps.ids.outputs.project_id }}" \
+            -f itemId="${{ steps.ids.outputs.item_id }}" \
+            -f fieldId="${{ steps.field.outputs.field_id }}" \
+            -f optionId="${{ steps.field.outputs.option_id }}"
+
+          echo "✅ Set Product Area to '${{ steps.map.outputs.value }}' for issue #${{ github.event.issue.number }}"

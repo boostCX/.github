@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security issue reporting
+    url: https://github.com/boostCX/.github/security/policy
+    about: Please report security vulnerabilities through the security policy process.
+  - name: General support
+    url: https://github.com/boostCX/.github/blob/main/SUPPORT.md
+    about: For questions and support requests, use the support process.

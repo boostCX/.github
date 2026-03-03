@@ -1,0 +1,111 @@
+name: "User story"
+description: "Describe a user-facing deliverable with acceptance criteria and optional sub-issue breakdown."
+title: "[Story]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **A user story describes value from the user's perspective.**
+        After refinement, break implementation into linked sub-issues when the work is larger than a single PR.
+
+  - type: dropdown
+    id: platform_first
+    attributes:
+      label: Platform-first check
+      description: Stories should be platform capability or configuration by default. If client-specific, explain why it cannot be configuration/reusable.
+      options:
+        - Platform capability (reusable)
+        - Configuration-only change
+        - Client-specific (exception, requires justification)
+        - Unsure (needs refinement)
+    validations:
+      required: true
+
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      description: "As a [role], I want [capability] so that [benefit]."
+      placeholder: |
+        As a [role],
+        I want [capability],
+        so that [benefit].
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context / background
+      description: "Why is this needed now? Link related issues, client requests, or product decisions."
+      placeholder: "Provide business context or links to related work."
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance criteria
+      description: "Testable conditions that must be true for this story to be complete."
+      placeholder: |
+        - [ ] Given [context], when [action], then [outcome]
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Sub-tasks / implementation breakdown (optional)
+      description: "If this looks like multiple PRs, list tasks here and convert them into linked sub-issues after refinement."
+      placeholder: |
+        - Task 1
+        - Task 2
+        - Task 3
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      options:
+        - Reporting Platform
+        - Tenant Catalog
+        - Powertrain
+        - AI Insights
+        - Communications
+        - Survey Engine
+        - Other (describe in context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: config_vs_code
+    attributes:
+      label: Config vs Code
+      options:
+        - Config
+        - Code
+        - Both
+        - Unknown / needs spike
+    validations:
+      required: true
+
+  - type: input
+    id: owner
+    attributes:
+      label: Owner / lead
+      placeholder: "@github-username or team name"
+    validations:
+      required: true
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks / dependencies / open questions
+      placeholder: "Anything that could block or complicate delivery."
+    validations:
+      required: false

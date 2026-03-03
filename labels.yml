@@ -1,0 +1,75 @@
+# boostCX standard label definitions
+# Source of truth for org-wide repository labels.
+# Sync to repos using: scripts/sync-labels.ps1 -Org boostCX -Repo <repo-name>
+#
+# Labels are grouped by purpose:
+#   type:     — classifies what the issue is (applied once)
+#   area:     — which product area owns or is affected (canonical; mirrored to Project field)
+#   meta:     — triage signals
+#   severity: — technical impact, bugs only (applied at triage)
+#
+# Priority, Blocked, Iteration, and Status are Project board fields, not labels.
+
+# ── Type labels ──────────────────────────────────────────────
+- name: bug
+  color: "d73a4a"
+  description: "Something is broken or not working as expected"
+
+- name: enhancement
+  color: "a2eeef"
+  description: "New feature or improvement to existing capability"
+
+- name: investigation
+  color: "d4c5f9"
+  description: "Broad symptom requiring scoped analysis before fix"
+
+- name: task
+  color: "0075ca"
+  description: "Internal engineering or operational work"
+
+# ── Meta / triage labels ─────────────────────────────────────
+- name: needs-clarification
+  color: "cccccc"
+  description: "Missing details to meet Definition of Ready (DoR)"
+
+# ── Area labels (canonical — mirrored to Project field via automation) ──
+- name: "area:reporting"
+  color: "1d76db"
+  description: "boostCX Reporting Platform"
+
+- name: "area:tenant-catalog"
+  color: "1d76db"
+  description: "boostCX Tenant Catalog"
+
+- name: "area:powertrain"
+  color: "1d76db"
+  description: "boostCX Powertrain (data layer)"
+
+- name: "area:ai-insights"
+  color: "1d76db"
+  description: "boostCX AI Insights"
+
+- name: "area:communications"
+  color: "1d76db"
+  description: "boostCX Communications (email/SMS)"
+
+- name: "area:survey-engine"
+  color: "1d76db"
+  description: "boostCX Survey Engine"
+
+# ── Severity labels (bugs only) ───────────────────────────────
+- name: "severity:critical"
+  color: "b60205"
+  description: "Crash, data loss, or security vulnerability"
+
+- name: "severity:high"
+  color: "d93f0b"
+  description: "Major feature broken, no workaround"
+
+- name: "severity:medium"
+  color: "fbca04"
+  description: "Workaround exists or partial failure"
+
+- name: "severity:low"
+  color: "0e8a16"
+  description: "Minor or cosmetic issue"
