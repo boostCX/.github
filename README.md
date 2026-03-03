@@ -6,6 +6,31 @@ Repositories in the `boostCX` org inherit these defaults automatically unless th
 
 > **Internal governance docs** (operating model, gate matrix, workflow playbook) are maintained in the private `boostCX/bcx-handbook` repository.
 
+---
+
+## ⚠ This repository is public
+
+This repository **must** be public for GitHub to inherit default issue templates, PR templates, and community health files across all `boostCX` organization repositories. This is a [platform requirement documented by GitHub](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file).
+
+### What belongs here
+
+- Issue and PR templates
+- Community health files (CONTRIBUTING, SECURITY, SUPPORT, CODEOWNERS)
+- Label definitions and sync workflows
+- Generic Copilot instructions
+
+### What does NOT belong here — ever
+
+- **No proprietary business logic, architecture, or implementation details**
+- **No client names, tenant identifiers, or customer data**
+- **No internal team structures, org charts, or personnel details beyond CODEOWNERS**
+- **No credentials, tokens, API keys, or connection strings**
+- **No internal process documentation** (operating model, gate matrix, playbook — these live in the private `bcx-handbook` repo)
+
+If in doubt, put it in `boostCX/bcx-handbook` (private), not here.
+
+---
+
 ## Issue templates
 
 | Template | Type label | Use when… |
