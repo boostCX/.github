@@ -1,6 +1,6 @@
 name: "Task"
 description: "Internal engineering or operational work (standalone or sub-task of a story)."
-title: "[Task] <short summary>"
+title: "[Task]: "
 labels:
   - task
 body:
@@ -8,6 +8,23 @@ body:
     attributes:
       value: |
         **Use this for internal work:** tech debt, refactors, CI/CD, infrastructure, documentation, or implementation sub-tasks of a story.
+        > **Triage:** The area dropdown below is informational only — it does **not** auto-apply a label. Triage **must** manually apply the matching `area:*` label (e.g., `area:reporting`). Priority and Blocked are set on the Project board, not here.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      description: "Which area owns this? Triage will apply the matching area:* label."
+      options:
+        - Reporting
+        - Tenant Catalog
+        - Powertrain
+        - AI Insights
+        - Communications
+        - Survey Engine
+        - Other (describe below)
+    validations:
+      required: true
 
   - type: textarea
     id: description
@@ -29,18 +46,12 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: area
+  - type: input
+    id: estimate
     attributes:
-      label: Product area
-      options:
-        - Reporting Platform
-        - Tenant Catalog
-        - Powertrain
-        - AI Insights
-        - Communications
-        - Survey Engine
-        - Other (describe below)
+      label: Estimate (hours)
+      description: "Estimated effort in hours for this task."
+      placeholder: "e.g., 4"
     validations:
       required: true
 
@@ -56,7 +67,7 @@ body:
     id: parent
     attributes:
       label: Parent issue (if sub-task)
-      description: "Link the parent story or investigation if this is a child task."
+      description: "Link the parent story or epic if this is a child task."
       placeholder: "#123 or URL"
     validations:
       required: false

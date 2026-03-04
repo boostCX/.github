@@ -1,5 +1,5 @@
-name: "User story"
-description: "Describe a user-facing deliverable with acceptance criteria and optional sub-issue breakdown."
+name: "Story"
+description: "A user-facing deliverable with acceptance criteria and optional sub-issue breakdown."
 title: "[Story]: "
 labels:
   - enhancement
@@ -9,12 +9,29 @@ body:
       value: |
         **A user story describes value from the user's perspective.**
         After refinement, break implementation into linked sub-issues when the work is larger than a single PR.
+        > **Triage:** The area dropdown below is informational only — it does **not** auto-apply a label. Triage **must** manually apply the matching `area:*` label (e.g., `area:reporting`). Priority and Blocked are set on the Project board, not here.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      description: "Which area owns this? Triage will apply the matching area:* label."
+      options:
+        - Reporting
+        - Tenant Catalog
+        - Powertrain
+        - AI Insights
+        - Communications
+        - Survey Engine
+        - Unsure
+    validations:
+      required: true
 
   - type: dropdown
     id: platform_first
     attributes:
       label: Platform-first check
-      description: Stories should be platform capability or configuration by default. If client-specific, explain why it cannot be configuration/reusable.
+      description: "Stories should be platform capability or configuration by default."
       options:
         - Platform capability (reusable)
         - Configuration-only change
@@ -55,6 +72,15 @@ body:
     validations:
       required: true
 
+  - type: input
+    id: estimate
+    attributes:
+      label: Estimate (hours)
+      description: "Estimated effort in hours for this story."
+      placeholder: "e.g., 8"
+    validations:
+      required: true
+
   - type: textarea
     id: tasks
     attributes:
@@ -66,33 +92,6 @@ body:
         - Task 3
     validations:
       required: false
-
-  - type: dropdown
-    id: area
-    attributes:
-      label: Product area
-      options:
-        - Reporting Platform
-        - Tenant Catalog
-        - Powertrain
-        - AI Insights
-        - Communications
-        - Survey Engine
-        - Other (describe in context)
-    validations:
-      required: true
-
-  - type: dropdown
-    id: config_vs_code
-    attributes:
-      label: Config vs Code
-      options:
-        - Config
-        - Code
-        - Both
-        - Unknown / needs spike
-    validations:
-      required: true
 
   - type: input
     id: owner

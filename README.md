@@ -35,14 +35,24 @@ If in doubt, put it in `boostCX/bcx-handbook` (private), not here.
 
 | Template | Type label | Use when… |
 | --- | --- | --- |
-| [User story](/.github/ISSUE_TEMPLATE/user_story.yml) | `enhancement` | Describing a user-facing deliverable with acceptance criteria |
-| [Feature request](/.github/ISSUE_TEMPLATE/feature_request.yml) | `enhancement` | Proposing a new capability or improvement |
+| [Epic](/.github/ISSUE_TEMPLATE/epic.yml) | `enhancement` | Defining a platform capability or large deliverable spanning multiple stories |
+| [Story](/.github/ISSUE_TEMPLATE/user_story.yml) | `enhancement` | Describing a user-facing deliverable with acceptance criteria |
+| [Task](/.github/ISSUE_TEMPLATE/task.yml) | `task` | Internal engineering, tech debt, or sub-task work |
 | [Bug — functional](/.github/ISSUE_TEMPLATE/bug_functional.yml) | `bug` | Reporting incorrect behavior |
 | [Bug — performance](/.github/ISSUE_TEMPLATE/bug_performance.yml) | `bug` | Reporting a measurable performance problem |
-| [Investigation](/.github/ISSUE_TEMPLATE/investigation_broad_symptom.yml) | `investigation` | Scoping a broad symptom into actionable child issues |
-| [Task](/.github/ISSUE_TEMPLATE/task.yml) | `task` | Internal engineering, test, or sub-task work |
+| [Investigation (Spike)](/.github/ISSUE_TEMPLATE/investigation_spike.yml) | `investigation` | Scoping a broad symptom into actionable child issues |
 
 Template chooser config: [config.yml](/.github/ISSUE_TEMPLATE/config.yml)
+
+### Capacity planning
+
+All sprintable templates (Story, Task, Bug, Investigation) require an **Estimate (hours)** field.
+Epics include an optional estimate for top-level sizing. Estimates are tracked as hours, not story points.
+
+### Project board fields (not labels)
+
+**Priority** (`P0`–`P3`), **Blocked**, **Iteration**, and **Status** are tracked as GitHub Projects board fields — they are not labels and do not appear in issue templates.
+The `area:*` labels are the source of truth for product area. Templates include a Product area dropdown; triage applies the matching `area:*` label after submission.
 
 ## Community health files
 
@@ -60,7 +70,7 @@ Template chooser config: [config.yml](/.github/ISSUE_TEMPLATE/config.yml)
 - **[.github/workflows/sync-labels.yml](.github/workflows/sync-labels.yml)** — auto-syncs labels to all org repos on push
 - **[.github/workflows/sync-project-fields.yml](.github/workflows/sync-project-fields.yml)** — mirrors `area:*` labels to the Project board **Product Area** field
 
-> **Note:** Priority (`P0`–`P3`), Blocked, Iteration, and Status are tracked as **GitHub Projects board fields**, not as repo labels.
+> **Note:** Priority (`P0`–`P3`), Blocked, Iteration, Status, and Estimate (hours) are tracked as **GitHub Projects board fields**, not as repo labels.
 
 Labels are synced to all org repos automatically whenever `labels.yml` is updated on `main`. You can also trigger a sync manually from the Actions tab.
 
