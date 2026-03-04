@@ -1,5 +1,4 @@
 # Default CODEOWNERS for organization repositories.
-# Replace the example team below with a real team in your org.
+# Repos can override by providing their own CODEOWNERS file.
 
-# Example:
-# * @boostCX/engineering
+* @boostCX/platform-code-reviewers

@@ -60,9 +60,10 @@ The `area:*` labels are the source of truth for product area. Templates include 
 | --- | --- |
 | [PULL_REQUEST_TEMPLATE.md](PULL_REQUEST_TEMPLATE.md) | Default PR checklist |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution expectations |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community standards |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting process |
 | [SUPPORT.md](SUPPORT.md) | Support routing |
-| [CODEOWNERS](CODEOWNERS) | Default ownership |
+| [CODEOWNERS](CODEOWNERS) | Default ownership (`@boostCX/platform-code-reviewers`) |
 
 ## Label management
 
