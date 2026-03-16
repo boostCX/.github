@@ -24,9 +24,10 @@ These instructions apply to all repositories in the `boostCX` organization unles
 ## Issue and work tracking
 
 - Issues use structured templates: user story, feature request, bug (functional/performance), investigation, task.
-- Labels classify **what** an issue is (type, area, severity). They are applied at creation or triage.
+- Labels classify **what** an issue is (type, area, severity, optional SRED claim tracking). They are applied at creation or triage.
 - **Priority** (`P0`–`P3`), **Blocked**, **Iteration**, and **Status** are tracked as GitHub Projects board fields, not as repo labels.
 - `area:*` labels are the canonical source for product-area classification; a workflow mirrors them to the **Product Area** project field.
+- `sred:claimable` is an optional triage label for Epics and Stories that should be tracked as potentially SRED claimable.
 - Workflow **status** (Backlog → In Progress → Done) is tracked on the GitHub Projects board, not as repo labels.
 - The authoritative operating model, gate definitions, and workflow playbook are maintained in the private [`boostCX/bcx-handbook`](https://github.com/boostCX/bcx-handbook) repository under `docs/`.
 

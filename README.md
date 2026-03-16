@@ -73,7 +73,10 @@ The `area:*` labels are the source of truth for product area. Templates include 
 
 ## Labels
 
-- **[labels.yml](labels.yml)** — canonical label definitions (type, area, severity, meta)
+- **[labels.yml](labels.yml)** — canonical label definitions (type, area, severity, meta, SRED)
+
+`sred:claimable` is an optional triage label used to flag work that should be tracked for SRED
+eligibility. Apply it only to Epics and Stories.
 
 > **Note:** Priority (`P0`–`P3`), Blocked, Iteration, Status, and Estimate (hours) are tracked as **GitHub Projects board fields**, not as repo labels.
 

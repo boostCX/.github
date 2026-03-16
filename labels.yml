@@ -6,6 +6,7 @@
 #   type:     — classifies what the issue is (applied once)
 #   area:     — which product area owns or is affected (canonical; mirrored to Project field)
 #   meta:     — triage signals
+#   sred:     — SRED claim-tracking, Epic/Story only
 #   severity: — technical impact, bugs only (applied at triage)
 #
 # Priority, Blocked, Iteration, and Status are Project board fields, not labels.
@@ -31,6 +32,11 @@
 - name: needs-clarification
   color: "cccccc"
   description: "Missing details to meet Definition of Ready (DoR)"
+
+# ── SRED / claim tracking labels ─────────────────────────────
+- name: "sred:claimable"
+  color: "bfdadc"
+  description: "Potentially SRED claimable; apply only to Epics and Stories"
 
 # ── Area labels (canonical — mirrored to Project field via automation) ──
 - name: "area:reporting"
