@@ -1,5 +1,6 @@
 name: "Investigation (Spike)"
 description: "Use for broad or unclear symptoms that need scoped analysis before actionable bugs/tasks can be filed."
+type: Investigation
 title: "[Spike] <symptom> - <area>"
 labels:
   - investigation

@@ -1,5 +1,6 @@
 name: "Task"
 description: "Internal engineering or operational work (standalone or sub-task of a story)."
+type: Task
 title: "[Task]: "
 labels:
   - task

@@ -1,6 +1,6 @@
 # boostCX standard label definitions
 # Source of truth for org-wide repository labels.
-# Sync to repos using: scripts/sync-labels.ps1 -Org boostCX -Repo <repo-name>
+# These labels are synchronized to org repos by private internal automation.
 #
 # Labels are grouped by purpose:
 #   type:     — classifies what the issue is (applied once)

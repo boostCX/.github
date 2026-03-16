@@ -1,5 +1,6 @@
 name: "Epic"
 description: "A platform capability or large deliverable spanning multiple stories."
+type: Epic
 title: "[Epic]: "
 labels:
   - enhancement

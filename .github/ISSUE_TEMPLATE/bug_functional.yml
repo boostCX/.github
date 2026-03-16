@@ -1,5 +1,6 @@
 name: "Bug (Functional)"
 description: "Report a functional bug with clear repro steps and expected vs actual behavior."
+type: Bug
 title: "[Bug]: "
 labels:
   - bug
