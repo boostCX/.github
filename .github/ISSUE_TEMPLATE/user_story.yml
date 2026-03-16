@@ -1,5 +1,6 @@
 name: "Story"
 description: "A user-facing deliverable with acceptance criteria and optional sub-issue breakdown."
+type: Story
 title: "[Story]: "
 labels:
   - enhancement

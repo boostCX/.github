@@ -16,7 +16,7 @@ This repository **must** be public for GitHub to inherit default issue templates
 
 - Issue and PR templates
 - Community health files (CONTRIBUTING, SECURITY, SUPPORT, CODEOWNERS)
-- Label definitions and sync workflows
+- Label definitions
 - Generic Copilot instructions
 
 ### What does NOT belong here — ever
@@ -30,6 +30,12 @@ This repository **must** be public for GitHub to inherit default issue templates
 If in doubt, put it in `boostCX/bcx-handbook` (private), not here.
 
 ---
+
+## `.github` vs `.template`
+
+- **`boostCX/.github` (public):** org-default issue templates, PR template, community health files, and public-safe label definitions.
+- **`boostCX/.template` (private):** starter repository content for new repos created from the template.
+- **Private automation repos:** org-write workflows and project automation that should not run from a public trust boundary.
 
 ## Issue templates
 
@@ -65,15 +71,13 @@ The `area:*` labels are the source of truth for product area. Templates include 
 | [SUPPORT.md](SUPPORT.md) | Support routing |
 | [CODEOWNERS](CODEOWNERS) | Default ownership (`@boostCX/platform-code-reviewers`) |
 
-## Label management
+## Labels
 
 - **[labels.yml](labels.yml)** — canonical label definitions (type, area, severity, meta)
-- **[.github/workflows/sync-labels.yml](.github/workflows/sync-labels.yml)** — auto-syncs labels to all org repos on push
-- **[.github/workflows/sync-project-fields.yml](.github/workflows/sync-project-fields.yml)** — mirrors `area:*` labels to the Project board **Product Area** field
 
 > **Note:** Priority (`P0`–`P3`), Blocked, Iteration, Status, and Estimate (hours) are tracked as **GitHub Projects board fields**, not as repo labels.
 
-Labels are synced to all org repos automatically whenever `labels.yml` is updated on `main`. You can also trigger a sync manually from the Actions tab.
+Label synchronization and project automation are intentionally run from a **private internal automation repository**, not from this public repo.
 
 ## For AI assistants
 
