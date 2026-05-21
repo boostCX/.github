@@ -16,6 +16,7 @@ Please do **not** open public issues for security vulnerabilities.
 - If private reporting is unavailable, contact the maintainers through your internal security channel.
 
 When reporting, include:
+
 - A description of the issue and potential impact
 - Reproduction steps or proof-of-concept
 - Any suggested remediation
