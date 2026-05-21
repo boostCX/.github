@@ -2,30 +2,12 @@ name: "Task"
 description: "Internal engineering or operational work (standalone or sub-task of a story)."
 type: Task
 title: "[Task]: "
-labels:
-  - task
 body:
   - type: markdown
     attributes:
       value: |
         **Use this for internal work:** tech debt, refactors, CI/CD, infrastructure, documentation, or implementation sub-tasks of a story.
-        > **Triage:** The area dropdown below is informational only — it does **not** auto-apply a label. Triage **must** manually apply the matching `area:*` label (e.g., `area:reporting`). Priority and Blocked are set on the Project board, not here.
-
-  - type: dropdown
-    id: area
-    attributes:
-      label: Product area
-      description: "Which area owns this? Triage will apply the matching area:* label."
-      options:
-        - Reporting
-        - Tenant Catalog
-        - Powertrain
-        - AI Insights
-        - Communications
-        - Survey Engine
-        - Other (describe below)
-    validations:
-      required: true
+        > **Triage:** Do not use labels for canonical metadata. Set org-level issue fields (Priority, Estimate (hours), Blocked, Workstream, etc.) and use Project 3 only for `Status`/`Iteration`. Product area is determined by the repository that owns the issue.
 
   - type: textarea
     id: description
@@ -48,21 +30,12 @@ body:
       required: true
 
   - type: input
-    id: estimate
-    attributes:
-      label: Estimate (hours)
-      description: "Estimated effort in hours for this task."
-      placeholder: "e.g., 4"
-    validations:
-      required: true
-
-  - type: input
     id: owner
     attributes:
       label: Owner / assignee
       placeholder: "@github-username"
     validations:
-      required: true
+      required: false
 
   - type: input
     id: parent

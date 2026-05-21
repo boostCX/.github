@@ -39,26 +39,31 @@ If in doubt, put it in `boostCX/bcx-handbook` (private), not here.
 
 ## Issue templates
 
-| Template | Type label | Use when… |
-| --- | --- | --- |
-| [Epic](/.github/ISSUE_TEMPLATE/epic.yml) | `enhancement` | Defining a platform capability or large deliverable spanning multiple stories |
-| [Story](/.github/ISSUE_TEMPLATE/user_story.yml) | `enhancement` | Describing a user-facing deliverable with acceptance criteria |
-| [Task](/.github/ISSUE_TEMPLATE/task.yml) | `task` | Internal engineering, tech debt, or sub-task work |
-| [Bug — functional](/.github/ISSUE_TEMPLATE/bug_functional.yml) | `bug` | Reporting incorrect behavior |
-| [Bug — performance](/.github/ISSUE_TEMPLATE/bug_performance.yml) | `bug` | Reporting a measurable performance problem |
-| [Investigation (Spike)](/.github/ISSUE_TEMPLATE/investigation_spike.yml) | `investigation` | Scoping a broad symptom into actionable child issues |
+| Template | Use when… |
+| --- | --- |
+| [Epic](/.github/ISSUE_TEMPLATE/epic.yml) | Defining a platform capability or large deliverable spanning multiple stories |
+| [Story](/.github/ISSUE_TEMPLATE/user_story.yml) | Describing a user-facing deliverable with acceptance criteria |
+| [Task](/.github/ISSUE_TEMPLATE/task.yml) | Internal engineering, tech debt, QA/ops work, or sub-task work |
+| [Bug — functional](/.github/ISSUE_TEMPLATE/bug_functional.yml) | Reporting incorrect behavior with clear repro steps |
+| [Bug — performance](/.github/ISSUE_TEMPLATE/bug_performance.yml) | Reporting a measurable performance problem with evidence |
+| [Investigation (Spike)](/.github/ISSUE_TEMPLATE/investigation_spike.yml) | Scoping a broad symptom into actionable child issues |
 
 Template chooser config: [config.yml](/.github/ISSUE_TEMPLATE/config.yml)
 
 ### Capacity planning
 
-All sprintable templates (Story, Task, Bug, Investigation) require an **Estimate (hours)** field.
-Epics include an optional estimate for top-level sizing. Estimates are tracked as hours, not story points.
+All sprintable work (Story, Task, Bug, Investigation) requires the **Estimate (hours)** org-level issue field.
+Estimates are tracked as hours, not story points.
 
-### Project board fields (not labels)
+### Project board fields
 
-**Priority** (`P0`–`P3`), **Blocked**, **Iteration**, and **Status** are tracked as GitHub Projects board fields — they are not labels and do not appear in issue templates.
-The `area:*` labels are the source of truth for product area. Templates include a Product area dropdown; triage applies the matching `area:*` label after submission.
+Project 3 carries only workflow state:
+
+- `Status`
+- `Iteration`
+
+All other metadata (Priority, Blocked, Severity, Workstream, Requires QA Task, Estimate (hours), etc.)
+lives on the issue as **org-level issue fields** (not as labels and not as project fields).
 
 ## Community health files
 
@@ -73,12 +78,9 @@ The `area:*` labels are the source of truth for product area. Templates include 
 
 ## Labels
 
-- **[labels.yml](labels.yml)** — canonical label definitions (type, area, severity, meta, SRED)
+**[labels.yml](labels.yml)** defines a minimal label set. Labels must not duplicate org-level issue fields.
 
-`sred:claimable` is an optional triage label used to flag work that should be tracked for SRED
-eligibility. Apply it only to Epics and Stories.
-
-> **Note:** Priority (`P0`–`P3`), Blocked, Iteration, Status, and Estimate (hours) are tracked as **GitHub Projects board fields**, not as repo labels.
+> **Note:** Priority, Blocked, Severity, Workstream, Requires QA Task, and Estimate (hours) are **org-level issue fields**. Project 3 tracks only `Status` and `Iteration`.
 
 Label synchronization and project automation are intentionally run from a **private internal automation repository**, not from this public repo.
 
