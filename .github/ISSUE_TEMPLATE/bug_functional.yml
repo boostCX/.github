@@ -2,30 +2,12 @@ name: "Bug (Functional)"
 description: "Report a functional bug with clear repro steps and expected vs actual behavior."
 type: Bug
 title: "[Bug]: "
-labels:
-  - bug
 body:
   - type: markdown
     attributes:
       value: |
         **Goal:** Make this reproducible and testable. No root-cause guesses required.
-        > **Triage:** The dropdowns below are informational only — they do **not** auto-apply labels. Triage **must** manually apply the matching `area:*` label (e.g., `area:reporting`) and `severity:*` label. Priority and Blocked are set on the Project board, not here.
-
-  - type: dropdown
-    id: area
-    attributes:
-      label: Product area
-      description: "Which area owns this? Triage will apply the matching area:* label."
-      options:
-        - Reporting
-        - Tenant Catalog
-        - Powertrain
-        - AI Insights
-        - Communications
-        - Survey Engine
-        - Unsure
-    validations:
-      required: true
+        > **Triage:** Do not use labels for canonical metadata. Set org-level issue fields (`Severity`, `Priority`, `Blocked`, `Workstream`, `Requires QA Task`, `Estimate (hours)`, etc.) and use Project 3 only for `Status`/`Iteration`.
 
   - type: dropdown
     id: environment
@@ -84,28 +66,6 @@ body:
       placeholder: "Attach screenshots or paste logs here."
     validations:
       required: false
-
-  - type: dropdown
-    id: severity
-    attributes:
-      label: Severity (technical impact)
-      description: "Triage will apply the matching severity:* label."
-      options:
-        - Critical (crash/data loss/security)
-        - High (major feature broken/no workaround)
-        - Medium (workaround exists/partial failure)
-        - Low (minor/cosmetic)
-    validations:
-      required: true
-
-  - type: input
-    id: estimate
-    attributes:
-      label: Estimate (hours)
-      description: "Estimated effort in hours to fix this bug."
-      placeholder: "e.g., 4"
-    validations:
-      required: true
 
   - type: textarea
     id: notes
