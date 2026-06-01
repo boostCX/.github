@@ -1,0 +1,141 @@
+name: Sync GitHub Project status to Azure DevOps
+
+on:
+  projects_v2_item:
+    types: [edited]
+  issues:
+    types: [closed]
+
+jobs:
+  sync-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── CLOSED ISSUE TRIGGER ─────────────────────────────────────────────
+      - name: Handle issue closed event
+        if: github.event_name == 'issues'
+        id: closed
+        run: |
+          echo "status=Done" >> $GITHUB_OUTPUT
+          echo "Issue closed - mapping to DevOps status: Released"
+
+          BODY="${{ github.event.issue.body }}"
+          IDS=$(echo "$BODY" | grep -oP 'ADO-\K[0-9]+' || echo "")
+          echo "ids=$IDS" >> $GITHUB_OUTPUT
+          echo "Found ADO IDs: $IDS"
+
+      # ── PROJECT STATUS TRIGGER ────────────────────────────────────────────
+      - name: Check project item change is a Status field
+        if: github.event_name == 'projects_v2_item'
+        id: check
+        run: |
+          FIELD="${{ github.event.projects_v2_item.field_name }}"
+          echo "Field changed: $FIELD"
+          if [ "$FIELD" = "Status" ]; then
+            echo "is_status=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_status=false" >> $GITHUB_OUTPUT
+            echo "Not a status change - skipping"
+          fi
+
+      - name: Get project item details via GraphQL
+        if: github.event_name == 'projects_v2_item' && steps.check.outputs.is_status == 'true'
+        id: graphql
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
+        run: |
+          ITEM_ID="${{ github.event.projects_v2_item.node_id }}"
+
+          RESPONSE=$(curl -s -X POST https://api.github.com/graphql \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"query\": \"query { node(id: \\\"$ITEM_ID\\\") { ... on ProjectV2Item { fieldValues(first: 20) { nodes { ... on ProjectV2ItemFieldSingleSelectValue { name field { ... on ProjectV2SingleSelectField { name } } } } } content { ... on Issue { body number } } } } }\"
+            }")
+
+          echo "GraphQL response received"
+
+          # Extract status value
+          STATUS=$(echo "$RESPONSE" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          nodes = data['data']['node']['fieldValues']['nodes']
+          for node in nodes:
+              if node and node.get('field', {}).get('name') == 'Status':
+                  print(node.get('name', ''))
+                  break
+          " 2>/dev/null || echo "")
+
+          # Extract issue body
+          BODY=$(echo "$RESPONSE" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          print(data['data']['node']['content'].get('body', ''))
+          " 2>/dev/null || echo "")
+
+          echo "Current status: $STATUS"
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+          # Extract ADO IDs from issue body
+          IDS=$(echo "$BODY" | grep -oP 'ADO-\K[0-9]+' || echo "")
+          echo "Found ADO IDs: $IDS"
+          echo "ids=$IDS" >> $GITHUB_OUTPUT
+
+      # ── MAP GITHUB STATUS TO DEVOPS STATE ─────────────────────────────────
+      - name: Map GitHub status to DevOps state
+        id: map
+        run: |
+          if [ "${{ github.event_name }}" = "issues" ]; then
+            STATUS="${{ steps.closed.outputs.status }}"
+            IDS="${{ steps.closed.outputs.ids }}"
+          else
+            STATUS="${{ steps.graphql.outputs.status }}"
+            IDS="${{ steps.graphql.outputs.ids }}"
+          fi
+
+          echo "GitHub Status: $STATUS"
+
+          case "$STATUS" in
+            "Backlog")      DEVOPS_STATE="New" ;;
+            "Refinement")   DEVOPS_STATE="Ready For Triage" ;;
+            "Ready")        DEVOPS_STATE="Accepted For Development" ;;
+            "In Progress")  DEVOPS_STATE="In Development" ;;
+            "In Review")    DEVOPS_STATE="In Development" ;;
+            "Validation")   DEVOPS_STATE="Testing" ;;
+            "Done")         DEVOPS_STATE="Released" ;;
+            *)              DEVOPS_STATE="" ;;
+          esac
+
+          echo "DevOps State: $DEVOPS_STATE"
+          echo "devops_state=$DEVOPS_STATE" >> $GITHUB_OUTPUT
+          echo "ids=$IDS" >> $GITHUB_OUTPUT
+
+      # ── UPDATE DEVOPS ─────────────────────────────────────────────────────
+      - name: Update DevOps work items
+        if: steps.map.outputs.devops_state != '' && steps.map.outputs.ids != ''
+        env:
+          ADO_PAT: ${{ secrets.ADO_PAT }}
+          ADO_ORG: ${{ secrets.ADO_ORGANIZATION }}
+          ADO_PROJ: ${{ secrets.ADO_PROJECT }}
+        run: |
+          DEVOPS_STATE="${{ steps.map.outputs.devops_state }}"
+          IDS="${{ steps.map.outputs.ids }}"
+
+          B64_PAT=$(printf ':%s' "$ADO_PAT" | base64 | tr -d '\n')
+
+          for ID in $IDS; do
+            echo "Updating work item $ID to: $DEVOPS_STATE"
+
+            HTTP_CODE=$(curl -s -o response.json -w "%{http_code}" -X PATCH \
+              "https://dev.azure.com/${ADO_ORG}/${ADO_PROJ}/_apis/wit/workitems/${ID}?api-version=7.1" \
+              -H "Authorization: Basic ${B64_PAT}" \
+              -H "Content-Type: application/json-patch+json" \
+              -d "[{\"op\":\"add\",\"path\":\"/fields/System.State\",\"value\":\"${DEVOPS_STATE}\"}]")
+
+            echo "HTTP Status: $HTTP_CODE"
+            cat response.json
+
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Work item $ID updated to '$DEVOPS_STATE'"
+            else
+              echo "❌ Failed to update work item $ID - HTTP $HTTP_CODE"
